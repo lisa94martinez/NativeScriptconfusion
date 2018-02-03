@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ChangeDetectorRef, ViewContainerRef } from '@angular/core';
 import { Dish } from '../shared/dish';
 import { Comment } from '../shared/comment';
 import { DishService } from '../services/dish.service';
@@ -8,6 +8,10 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { RouterExtensions } from 'nativescript-angular/router';
 import { Toasty } from 'nativescript-toasty';
 import 'rxjs/add/operator/switchMap';
+import { action } from "ui/dialogs";
+import { ModalDialogService, ModalDialogOptions } from "nativescript-angular/modal-dialog";
+import { TextField } from 'ui/text-field';
+import { CommentComponent } from "../Comment/comment.component";
 
 @Component({
   selector: 'app-dishdetail',
@@ -29,6 +33,9 @@ export class DishdetailComponent implements OnInit {
     private routerExtensions: RouterExtensions,
     private favoriteservice: FavoriteService,
     private fonticon: TNSFontIconService,
+    private changeDetectorRef: ChangeDetectorRef,
+    private modalService: ModalDialogService,
+    private vcRef: ViewContainerRef,
     @Inject('BaseURL') private BaseURL) { }
 
     ngOnInit() {
@@ -47,6 +54,24 @@ export class DishdetailComponent implements OnInit {
           errmess => { this.dish = null; this.errMess = <any>errmess; });
     }
 
+    displayActionDialog() {
+        let options = {
+            title: "Actions",
+            cancelButtonText: "Cancel",
+            actions: ["Add to Favorites", "Add Comment"]
+        };
+        action(options).then((result) => {
+            console.log(result);
+            if (result == "Add to Favorites"){
+              this.addToFavorites();
+            }else if(result == "Add Comment"){
+              console.log('Adding to comments', this.dish.id);
+              this.openComments(this.dish);
+            }
+        });
+
+    }
+
     addToFavorites() {
       if (!this.favorite) {
         console.log('Adding to Favorites', this.dish.id);
@@ -56,7 +81,24 @@ export class DishdetailComponent implements OnInit {
       }
     }
 
-  goBack(): void {
-    this.routerExtensions.back();
-  }
+    goBack(): void {
+      this.routerExtensions.back();
+    }
+
+    openComments(dish) {
+
+      let options: ModalDialogOptions = {
+          viewContainerRef: this.vcRef,
+          context: dish,
+          fullscreen: false
+      };
+
+      this.modalService.showModal(CommentComponent, options)
+        .then((result: any) => {
+          if (result) {
+            this.dish.comments.push(result);
+          }
+        })
+    }
+
 }
