@@ -29,6 +29,7 @@ import { PromotionService } from './services/promotion.service';
 import { LeaderService } from './services/leader.service';
 import { FavoriteService } from './services/favorite.service';
 import { CouchbaseService } from './services/couchbase.service';
+import { PlatformService } from './services/platform.service';
 
 // Uncomment and add to NgModule imports if you need to use two-way binding
 // import { NativeScriptFormsModule } from "nativescript-angular/forms";
@@ -76,7 +77,8 @@ import { CouchbaseService } from './services/couchbase.service';
       PromotionService,
       LeaderService,
       FavoriteService,
-      CouchbaseService
+      CouchbaseService,
+      PlatformService
     ],
     schemas: [
         NO_ERRORS_SCHEMA
