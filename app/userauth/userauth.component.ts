@@ -1,24 +1,28 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Page } from 'ui/page';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { getString, setString } from 'application-settings';
 import { RouterExtensions } from 'nativescript-angular/router';
 import * as camera from 'nativescript-camera';
 import { Image } from 'ui/image';
+import * as imagepicker from "nativescript-imagepicker";
 
 @Component({
     moduleId: module.id,
     templateUrl: './userauth.component.html'
 })
+
 export class UserAuthComponent implements OnInit {
 
     loginForm: FormGroup;
     registerForm: FormGroup;
     tabSelectedIndex: number = 0;
+    items = [];
 
     constructor(private page: Page,
         private routerExtensions: RouterExtensions,
-        private formBuilder: FormBuilder) {
+        private formBuilder: FormBuilder,
+        private changeDetectorRef: ChangeDetectorRef ) {
 
         this.loginForm = this.formBuilder.group({
             userName: [getString('userName', ''), Validators.required],
@@ -39,6 +43,26 @@ export class UserAuthComponent implements OnInit {
     ngOnInit() {
 
     }
+
+    getFromLibrary() {
+    let context = imagepicker.create({
+      mode: "single"
+    });
+
+
+    context.authorize()
+      .then(function() {
+        return context.present();
+      })
+      .then((selection) => {
+        selection.forEach((selected)=> {
+          let image = <Image>this.page.getViewById<Image>('myPicture');
+          image.src = selected;
+        });
+      }).catch(function (e) {
+        console.log('Error -> ' + e.message)
+      });
+  }
 
     takePicture() {
         let isAvailable = camera.isAvailable();
