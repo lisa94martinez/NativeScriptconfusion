@@ -21,6 +21,7 @@ import { FavoritesComponent } from './favorites/favorites.component'
 import { ReservationComponent } from './reservation/reservation.component';
 import { ReservationModalComponent } from "./reservationmodal/reservationmodal.component";
 import { CommentComponent } from "./Comment/comment.component";
+import { UserAuthComponent } from "./userauth/userauth.component";
 
 import { baseURL } from './shared/baseurl';
 
@@ -62,7 +63,8 @@ import { CouchbaseService } from './services/couchbase.service';
       FavoritesComponent,
       ReservationComponent,
       ReservationModalComponent,
-      CommentComponent
+      CommentComponent,
+      UserAuthComponent
     ],
     entryComponents: [ReservationModalComponent,
       CommentComponent],
